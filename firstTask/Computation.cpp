@@ -1,7 +1,7 @@
 #include "Computation.h"
 
 
-#define PI 3.14159265;
+
 
 double Computation::count_norm(Point vect)
 {

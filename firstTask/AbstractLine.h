@@ -10,7 +10,7 @@ public:
 	virtual double angleBetweenOXandLine() = 0;
 	virtual double get_a() = 0;
 	static void drawLine(Point first, Point second, Mat& mat);
-	static double angleBetweenLines(AbstractLine* first, AbstractLine* second);
+	static double angleBetweenOXandBisector(AbstractLine* first, AbstractLine* second);
 	virtual void drawLineByEquasion(Mat& field) = 0;
 };
 

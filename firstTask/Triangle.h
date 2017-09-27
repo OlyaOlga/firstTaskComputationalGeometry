@@ -1,6 +1,8 @@
 #pragma once
 #include "opencv2/imgproc.hpp"
-#include<unordered_map>
+#include "AbstractLine.h"
+#include<vector>
+#include <cmath>
 
 using namespace std;
 using namespace cv;
@@ -19,10 +21,16 @@ class Triangle
 {
 private:
 	vector<Point> vertices;
-public:
+	public:
 	Triangle(Point _a, Point _b, Point _c);
-	void output(Mat& mat)const;
+	vector<AbstractLine*> get_lines_of_triangle();
+	vector<AbstractLine*> get_bisectors();//not implemented yet
+
+
+
+	void output(Mat& mat);
 	vector<pair<Point, double>>  calculate_angles();
 	Vec<Point, 2> form_vector(Point main_point, Point first_point, Point second_point);
+	void print_bisectors(Mat& field);//debug method
 	friend Mat& operator<<(Mat& mat, const Triangle& tr);
 };

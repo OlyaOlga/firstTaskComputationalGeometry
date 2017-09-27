@@ -1,6 +1,8 @@
 #pragma once
 #include "opencv2/imgproc.hpp"
 
+#define PI 3.14159265;
+
 using namespace std;
 using namespace cv;
 

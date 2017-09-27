@@ -11,5 +11,6 @@ public:
 	~TypeLineDefiner();
 
 	AbstractLine* DefineType(Point first, Point second);
+	AbstractLine* DefineType(double _x, double _y, double _angle);
 };
 
