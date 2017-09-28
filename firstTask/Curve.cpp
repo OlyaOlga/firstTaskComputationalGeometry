@@ -16,9 +16,12 @@ std::vector<cv::Point> Curve::getPoints()
 
 std::istream & operator >> (std::istream & stream, Curve & curve)
 {
+	while (!stream.eof())
+	{
 		Point toAdd;
 		stream >> toAdd.x;
 		stream >> toAdd.y;
 		curve.basePoints.push_back(toAdd);
+	}
 		return stream;
 }

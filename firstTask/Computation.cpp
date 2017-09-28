@@ -3,7 +3,7 @@
 
 
 
-double Computation::count_norm(Point vect)
+double Computation::count_norm(Point2f vect)
 {
 	return sqrt(pow(vect.x, 2) + pow(vect.y, 2));
 }
