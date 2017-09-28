@@ -84,13 +84,16 @@ void main()
 	}
 	imshow("", main_mat);
 	waitKey();
-	for (int i = allImportantPoints[0].x; i < allImportantPoints[1].x; ++i)
+	for (int j = 0; j < allImportantPoints.size()-1; ++j)
 	{
-		Mat mat;
-		Point c(i, lines[0]->get_a()*i+lines[0]->get_a());
-		Triangle tr(a, b, c);
-		tr.find_center_of_big_circle();
-		waitKey(100);
+		for (int i = allImportantPoints[j].x; i < allImportantPoints[j+1].x; ++i)
+		{
+			Mat mat;
+			Point c(i, lines[j]->get_a()*i + lines[j]->get_b());
+			Triangle tr(a, b, c);
+			tr.find_center_of_big_circle();
+			waitKey(30);
+		}
 	}
 	waitKey();
 }
