@@ -36,4 +36,8 @@ private:
 	Point2f find_median(Point2f first, Point2f second);
 	Point find_center_of_big_circle();
 	friend Mat& operator<<(Mat& mat, const Triangle& tr);
+
+	Point findBisector(int num_of_vertex);
+	Point findCenterOfSmallCircle();
+
 };

@@ -46,7 +46,7 @@ vector<AbstractLine*> Triangle::get_bisectors()
 	return bisectors;
 }
 
-vector<double> Triangle::get_sides_of_triangle()
+vector<double> Triangle::get_sides_of_triangle()//apropriative sides:(0;1),(1;2),(0;2) - vertices: 2, 0, 1
 {
 	vector<double> res;
 	for (int i = 0; i < vertices.size(); ++i)
@@ -138,6 +138,115 @@ Point Triangle::find_center_of_big_circle()
 	double radius = getR();
 	circle(field, res, radius, Scalar(0, 0, 255));
 	imshow("", field);
+	return res;
+}
+
+Point Triangle::findBisector(int num_of_vertex)
+{
+	
+	int vertexA = num_of_vertex%3;
+	int vertexB = (num_of_vertex + 1) % 3;
+	int vertexC = (num_of_vertex + 2) % 3;
+	Point res;
+	AbstractLine* line;
+	TypeLineDefiner definer;
+	Mat outputMat(1000, 1000, CV_8UC3);
+
+
+
+	double a; double b; double c;
+	c = Computation::count_norm(vertices[vertexB] - vertices[vertexC]);
+	a = Computation::count_norm(vertices[vertexA] -  vertices[vertexB]);
+	b = Computation::count_norm(vertices[vertexA] - vertices[vertexC]);
+
+
+	
+	double x = a*c / (a + b);
+
+	
+
+	Point to_move(vertices[vertexB].x, vertices[vertexB].y);//move point B to center
+	Mat move_to_center(1, 3, CV_32F);
+	move_to_center.at<float>(0,0) = vertices[vertexB].x;
+	move_to_center.at<float>(0,1) = vertices[vertexB].y;
+	move_to_center.at<float>(0,2) = 1;
+
+	Mat just_move(1, 3, CV_32F);//move point C with the same movement as B
+	just_move.at<float>(0,0) = vertices[vertexC].x;
+	just_move.at<float>(0,1) = vertices[vertexC].y;
+	just_move.at<float>(0,2) = 1;
+
+	circle(outputMat, vertices[vertexA], 5, Scalar(255, 0, 0));
+	circle(outputMat, vertices[vertexB], 5, Scalar(0, 255, 0));
+	circle(outputMat, vertices[vertexC], 5, Scalar(0, 0, 255));
+
+	circle(outputMat, vertices[vertexB], x, Scalar(0, 0, 0));
+
+	Mat transportation_matrix = (Mat_<float>(3, 3) << 1, 0, 0, 0, 1, 0, -(vertices[vertexB].x), -(vertices[vertexB].y), 1);
+
+	Mat transported_center(1, 3, CV_32F);
+	transported_center = move_to_center*transportation_matrix;
+
+	Mat just_moved(1, 3, CV_32F);
+	just_moved = just_move*transportation_matrix;
+
+	cout << transportation_matrix << endl;
+	cout << transported_center << endl;
+	cout << just_moved << endl;
+
+	line = definer.DefineType(Point(transported_center.at<float>(0,0), transported_center.at<float>(0,1)), Point(just_moved.at<float>(0,0), just_moved.at<float>(0,1)));//!!!!
+
+	auto current_res = Computation::intersection_of_circle_and_plane(line, x, outputMat);
+	
+	Point necessary_point;
+	if (Computation::count_norm(Point(just_moved.at<float>(0,0), just_moved.at<float>(0,1)) - (Point)(current_res.first)) > Computation::count_norm(Point(just_moved.at<float>(0, 0), just_moved.at<float>(0, 1)) - (Point)(current_res.second)))//moved vertex C
+	{
+		necessary_point = current_res.second;
+	}
+	else
+	{
+		necessary_point = current_res.first;
+	}
+	circle(outputMat, necessary_point, 7, Scalar(255, 255, 255), -1);
+	
+
+	Mat current_res_mat(1, 3, CV_32F);
+	current_res_mat.at<float>(0, 0) = necessary_point.x;
+	current_res_mat.at<float>(0, 1) = necessary_point.y;
+	current_res_mat.at<float>(0, 2) = 1;
+
+	Mat inverseMat = (Mat_<float>(3, 3) << 1, 0, 0, 0, 1, 0, vertices[vertexB].x, vertices[vertexB].y, 1);
+
+	Mat result_returned_to_initial_coordinates(1, 3, CV_32F);
+	result_returned_to_initial_coordinates = current_res_mat*inverseMat;
+	res.x = result_returned_to_initial_coordinates.at<float>(0, 0);
+	res.y = result_returned_to_initial_coordinates.at<float>(0, 1);
+
+	circle(outputMat, res, 7, Scalar(0, 255, 255), -1);
+
+	line->drawLine(vertices[vertexA], vertices[vertexB], outputMat);
+	line->drawLine(vertices[vertexA], vertices[vertexC], outputMat);
+
+	line->drawLine(vertices[vertexA], res, outputMat);
+	return res;
+}
+
+Point Triangle::findCenterOfSmallCircle()
+{
+	Point res;
+	TypeLineDefiner definer;
+	vector<AbstractLine*> bisectors;
+	Mat outputMat(1000, 1000, CV_8UC3);
+	output(outputMat);
+	for (int index = 0; index < 3; ++index)
+	{
+		Point point_of_bisector = findBisector(index);
+		bisectors.push_back( definer.DefineType(point_of_bisector, vertices[index]));
+		bisectors[index]->drawLineByEquasion(outputMat);
+	} 
+	
+	
+	res = bisectors[0]->lines_intersection(bisectors[1]);
 	return res;
 }
 

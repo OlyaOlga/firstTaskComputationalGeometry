@@ -1,5 +1,6 @@
 #pragma once
 #include "opencv2/imgproc.hpp"
+#include"AbstractLine.h"
 
 #define PI 3.14159265;
 
@@ -15,4 +16,5 @@ public:
 	static double arc_cos(double cos);
 	static double find_angle(Point pv1, Point v2);
 	static double from_rad_to_degree(double rad);
+	static pair<Point2f, Point2f> intersection_of_circle_and_plane(AbstractLine* line, double rad_second, Mat& mat);
 };

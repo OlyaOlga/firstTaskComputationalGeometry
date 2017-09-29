@@ -47,25 +47,29 @@ void data_5()
 	Point c(100, 10);
 }
 
-void test_1()
+void data_6()
 {
-	int size = 1000;
-
 	Point a(100, 110);
 	Point b(30, 310);
 	Point c(130, 330);
+}
+void smaller_circle()
+{
+	int size = 1000;
+
+	Point a(5, 5);
+	Point b(5, 100);
+	Point c(100, 100);
 
 	Triangle tr(a, b, c);
 	Mat field(size, size, CV_8UC3);
 	field = Scalar(255, 255, 255);
-
-
 	field << tr;
-	tr.print_bisectors(field);
 	imshow("", field);
+	Point center = tr.findCenterOfSmallCircle();
 	waitKey();
 }
-void main()
+void bigger_circle()
 {
 	int size = 1000;
 	Point a(200, 300);
@@ -84,9 +88,9 @@ void main()
 	}
 	imshow("", main_mat);
 	waitKey();
-	for (int j = 0; j < allImportantPoints.size()-1; ++j)
+	for (int j = 0; j < allImportantPoints.size() - 1; ++j)
 	{
-		for (int i = allImportantPoints[j].x; i < allImportantPoints[j+1].x; ++i)
+		for (int i = allImportantPoints[j].x; i < allImportantPoints[j + 1].x; ++i)
 		{
 			Mat mat;
 			Point c(i, lines[j]->get_a()*i + lines[j]->get_b());
@@ -96,4 +100,10 @@ void main()
 		}
 	}
 	waitKey();
+}
+void main()
+{
+	//bigger_circle();
+	smaller_circle();
+	system("pause");
 }

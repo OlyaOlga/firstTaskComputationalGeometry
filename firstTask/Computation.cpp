@@ -32,3 +32,25 @@ double Computation::from_rad_to_degree(double rad)
 {
 	return rad*180/PI;
 }
+
+pair<Point2f, Point2f> Computation::intersection_of_circle_and_plane(AbstractLine* line, double r, Mat& m)
+{
+	Point2f firstRes;
+	Point2f secondRes;
+	//y = (r ^ 2 — R ^ 2 — a ^ 2 — b ^ 2 — 2ax) / 2b.
+	double A = line->get_a()*line->get_a() + 1;
+	double B = 2 * line->get_a()*line->get_b();
+	double C = line->get_b()*line->get_b() - r*r;
+	double D = B*B - 4 * A*C;
+	double x0 = (-B + sqrt(D)) / (2 * A);
+	double x1 = (-B - sqrt(D)) / (2 * A);
+	double y0 = line->get_a()*x0 + line->get_b();
+	double y1 = line->get_a()*x1 + line->get_b();
+	firstRes.x = x0;
+	firstRes.y = y0;
+	secondRes.x = x1;
+	secondRes.y = y1;
+	return make_pair(firstRes, secondRes);
+}
+
+
