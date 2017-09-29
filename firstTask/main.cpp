@@ -56,17 +56,44 @@ void data_6()
 void smaller_circle()
 {
 	int size = 1000;
-
-	Point a(5, 5);
-	Point b(5, 100);
-	Point c(100, 100);
-
-	Triangle tr(a, b, c);
-	Mat field(size, size, CV_8UC3);
-	field = Scalar(255, 255, 255);
-	field << tr;
-	imshow("", field);
-	Point center = tr.findCenterOfSmallCircle();
+	Point a(200, 300);
+	Point b(400, 300);
+	Mat main_mat(size, size, CV_8UC3);
+	Curve curve;
+	fstream curvePoints("points.txt");
+	curvePoints >> curve;
+	vector<AbstractLine*> lines;
+	vector<Point> allImportantPoints = curve.getPoints();
+	TypeLineDefiner definer;
+	for (int i = 1; i < allImportantPoints.size(); ++i)
+	{
+		lines.push_back(definer.DefineType(allImportantPoints[i - 1], allImportantPoints[i]));
+		lines.back()->drawLine(allImportantPoints[i - 1], allImportantPoints[i], main_mat);
+	}
+	imshow("", main_mat);
+	waitKey();
+	for (int j = 0; j < allImportantPoints.size() - 1; ++j)
+	{
+		for (int i = allImportantPoints[j].x; i < allImportantPoints[j + 1].x; ++i)
+		{
+			Mat mat(1000, 1000, CV_8UC3);
+			mat = Scalar(255, 255, 255);
+			Point c(i, lines[j]->get_a()*i + lines[j]->get_b());
+			Triangle tr(a, b, c);
+			mat << tr;
+			for (int i = 1; i < allImportantPoints.size(); ++i)
+			{
+				lines.push_back(definer.DefineType(allImportantPoints[i - 1], allImportantPoints[i]));
+				lines.back()->drawLine(allImportantPoints[i - 1], allImportantPoints[i], mat);
+			}
+			Point center = tr.findCenterOfSmallCircle();
+			tr.find_center_of_big_circle(mat);
+			double rad = tr.get_r();
+			circle(mat, center, rad, Scalar(255, 0, 0), -1);
+			imshow("", mat);
+			waitKey(30);
+		}
+	}
 	waitKey();
 }
 void bigger_circle()
@@ -95,7 +122,7 @@ void bigger_circle()
 			Mat mat;
 			Point c(i, lines[j]->get_a()*i + lines[j]->get_b());
 			Triangle tr(a, b, c);
-			tr.find_center_of_big_circle();
+			tr.find_center_of_big_circle(mat);
 			waitKey(30);
 		}
 	}

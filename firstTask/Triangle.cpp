@@ -65,6 +65,15 @@ double Triangle::getR()
 	return res;
 }
 
+double Triangle::get_r()
+{
+	double res;
+	vector<double> sides = get_sides_of_triangle();
+	double p = (sides[0] + sides[1] + sides[2]) / 2.0;
+	res = sqrt(((p - sides[0])*(p - sides[1])*(p - sides[2])) / p);
+	return res;
+}
+
 vector<Point> Triangle::get_vertices()
 {
 	return vertices;
@@ -118,12 +127,11 @@ Point2f Triangle::find_median(Point2f first, Point2f second)
 	return res;
 }
 
-Point Triangle::find_center_of_big_circle()
+Point Triangle::find_center_of_big_circle(Mat& field)
 {
 	Point res;
 	vector<AbstractLine*> middle_perpendiculars;
 	TypeLineDefiner definer;
-	Mat field(1000, 1000, CV_8UC3);
 	print_by_sections(field);
 	for (int i = 0; i < 3; ++i)
 	{
@@ -190,9 +198,9 @@ Point Triangle::findBisector(int num_of_vertex)
 	Mat just_moved(1, 3, CV_32F);
 	just_moved = just_move*transportation_matrix;
 
-	cout << transportation_matrix << endl;
-	cout << transported_center << endl;
-	cout << just_moved << endl;
+	//cout << transportation_matrix << endl;
+	//cout << transported_center << endl;
+	//cout << just_moved << endl;
 
 	line = definer.DefineType(Point(transported_center.at<float>(0,0), transported_center.at<float>(0,1)), Point(just_moved.at<float>(0,0), just_moved.at<float>(0,1)));//!!!!
 
@@ -243,9 +251,7 @@ Point Triangle::findCenterOfSmallCircle()
 		Point point_of_bisector = findBisector(index);
 		bisectors.push_back( definer.DefineType(point_of_bisector, vertices[index]));
 		bisectors[index]->drawLineByEquasion(outputMat);
-	} 
-	
-	
+	}	
 	res = bisectors[0]->lines_intersection(bisectors[1]);
 	return res;
 }
@@ -268,8 +274,8 @@ Mat & operator<<(Mat & mat, const Triangle & tr)
 	for (int i = 0; i<tr.vertices.size(); ++i)
 	{
 		Scalar color(0, 255, 255);
-		line(mat, tr.vertices[i % 3], tr.vertices[(i + 1) % 3], color);
-		line(mat, tr.vertices[i % 3], tr.vertices[(i + 2) % 3], color);
+		line(mat, tr.vertices[i % 3], tr.vertices[(i + 1) % 3], color, 5);
+		line(mat, tr.vertices[i % 3], tr.vertices[(i + 2) % 3], color, 5);
 	}
 	imshow("", mat);
 	return mat;

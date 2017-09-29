@@ -27,6 +27,7 @@ private:
 	vector<AbstractLine*> get_bisectors();
 	vector<double> get_sides_of_triangle();
 	double getR();
+	double get_r();
 	vector<Point> get_vertices();
 	void output(Mat& mat);
 	void print_by_sections(Mat& mat);
@@ -34,7 +35,7 @@ private:
 	Vec<Point, 2> form_vector(Point main_point, Point first_point, Point second_point);
 	void print_bisectors(Mat& field);//debug method, to do
 	Point2f find_median(Point2f first, Point2f second);
-	Point find_center_of_big_circle();
+	Point find_center_of_big_circle(Mat& field);
 	friend Mat& operator<<(Mat& mat, const Triangle& tr);
 
 	Point findBisector(int num_of_vertex);
